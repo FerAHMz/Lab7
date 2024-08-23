@@ -24,6 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 
 enum class NotificationType {
@@ -55,25 +58,30 @@ fun generateFakeNotifications(): List<Notification> {
         "No te olvides de asistir a esta capacitación mañana, a las 6pm, en el Intecap.",
         "A Juan le ha gustado tu publicación. ¡Revisa tu perfil!"
     )
-
     val types = NotificationType.entries.toTypedArray()
 
-    // Genera 3 notificaciones de cada tipo
-    for (type in types) {
-        repeat(3) {
-            val randomDate = Date(System.currentTimeMillis() - (0..10).random() * 24 * 60 * 60 * 1000)
-            notifications.add(
-                Notification(
-                    id = notifications.size + 1,
-                    title = titles.random(),
-                    body = bodies.random(),
-                    sendAt = randomDate,
-                    type = type
-                )
+    val currentDate = LocalDate.now()
+    for (i in 1..50) {
+        val daysAgo = (0..10).random()
+        val hoursAgo = (0..23).random()
+        val minutesAgo = (0..59).random()
+        val sendAt = LocalDateTime.of(currentDate.minusDays(daysAgo.toLong()), LocalTime.of(hoursAgo, minutesAgo)).toDate()
+        notifications.add(
+            Notification(
+                id = i,
+                title = titles.random(),
+                body = bodies.random(),
+                sendAt = sendAt,
+                type = types.random()
             )
-        }
+        )
     }
     return notifications
+}
+
+
+fun LocalDateTime.toDate(): Date {
+    return Date.from(this.atZone(java.time.ZoneId.systemDefault()).toInstant())
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
