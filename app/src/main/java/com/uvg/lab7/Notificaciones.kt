@@ -119,10 +119,30 @@ fun NotificationsScreen() {
             FiltersSection(selectedType) { type ->
                 selectedType = type
             }
-            NotificationsList(notifications.filter { it.type == selectedType || selectedType == null })
+            NotificationsCardList(notifications.filter { it.type == selectedType || selectedType == null })
         }
     }
 }
+
+@Composable
+fun NotificationsCardList(notifications: List<Notification>) {
+    OutlinedCard(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            items(notifications) { notification ->
+                NotificationCard(notification)
+            }
+        }
+    }
+}
+
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
